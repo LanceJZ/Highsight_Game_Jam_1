@@ -13,12 +13,14 @@ namespace EngineTest
         SpriteBatch SB;
         GameLogic TheGame;
         Camera TheCamera;
+        Timer FPSTimer;
+        float FPSFrames = 0;
         bool NotFirstFrame;
 
         public Game1()
         {
             GDM = new GraphicsDeviceManager(this);
-            GDM.SynchronizeWithVerticalRetrace = true; //When true, 60FSP refresh rate locked.
+            GDM.SynchronizeWithVerticalRetrace = false; //When true, 60FSP refresh rate locked.
             GDM.GraphicsProfile = GraphicsProfile.HiDef;
             GDM.PreferredBackBufferWidth = 1200;
             GDM.PreferredBackBufferHeight = 900;
@@ -26,15 +28,16 @@ namespace EngineTest
             GDM.PreparingDeviceSettings += SetMultiSampling;
             GDM.ApplyChanges();
             GDM.GraphicsDevice.RasterizerState = new RasterizerState(); //Must be after Apply Changes.
-
+            IsFixedTimeStep = true; //When true, 60FSP refresh rate locked.
             Content.RootDirectory = "Content";
             Helper.Initialize(this, GDM, GraphicsDevice);
+            FPSTimer = new Timer(this, 1);
         }
 
         void SetMultiSampling(object sender, PreparingDeviceSettingsEventArgs eventArgs)
         {
             PresentationParameters PresentParm = eventArgs.GraphicsDeviceInformation.PresentationParameters;
-            PresentParm.MultiSampleCount = 16;
+            PresentParm.MultiSampleCount = 4;
         }
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -86,6 +89,15 @@ namespace EngineTest
                 Exit();
 
             base.Update(gameTime);
+
+            FPSFrames++;
+
+            if (FPSTimer.Elapsed)
+            {
+                FPSTimer.Reset();
+                System.Diagnostics.Debug.WriteLine("FPS " + FPSFrames.ToString());
+                FPSFrames = 0;
+            }
         }
 
         /// <summary>

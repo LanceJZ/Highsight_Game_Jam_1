@@ -21,6 +21,7 @@ namespace Highsight_Game_Jam_1
         Camera TheCamera;
         Player ThePlayer;
         Shield TheShield;
+        Enemy TheEnemy;
 
         GameState GameMode = GameState.MainMenu;
         KeyboardState OldKeyState;
@@ -28,10 +29,12 @@ namespace Highsight_Game_Jam_1
         public GameState CurrentMode { get => GameMode; }
         public Player PlayerRef { get => ThePlayer; }
         public Shield ShieldRef { get => TheShield; }
+        public Enemy EnemyRef { get => TheEnemy; }
 
         public GameLogic(Game game, Camera camera) : base(game)
         {
             TheCamera = camera;
+            TheEnemy = new Enemy(game, camera, this);
             TheShield = new Shield(game, camera, this);
             ThePlayer = new Player(game, camera, this);
 

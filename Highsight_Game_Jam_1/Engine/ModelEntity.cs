@@ -373,11 +373,21 @@ namespace Highsight_Game_Jam_1
         }
         #endregion
         #region Helper Methods
+        /// <summary>
+        /// Parents of any children must be added first or they will not be seen
+        /// by the children added later. Active Dependent by default.
+        /// </summary>
+        /// <param name="parent">Parent Entity</param>
         public void AddAsChildOf(ModelEntity parent)
         {
             AddAsChildOf(parent, true);
         }
-
+        /// <summary>
+        /// Parents of any children must be added first or they will not be seen
+        /// by the children added later.
+        /// </summary>
+        /// <param name="parent">Parent Entity</param>
+        /// <param name="activeDepedent">True if child active state depends on parent.</param>
         public void AddAsChildOf(ModelEntity parent, bool activeDepedent)
         {
             parent.Children.Add(this);
