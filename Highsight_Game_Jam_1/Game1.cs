@@ -13,6 +13,7 @@ namespace EngineTest
         SpriteBatch SB;
         GameLogic TheGame;
         Camera TheCamera;
+        bool NotFirstFrame;
 
         public Game1()
         {
@@ -27,8 +28,7 @@ namespace EngineTest
             GDM.GraphicsDevice.RasterizerState = new RasterizerState(); //Must be after Apply Changes.
 
             Content.RootDirectory = "Content";
-
-            Helper.TheGame = this;
+            Helper.Initialize(this, GDM, GraphicsDevice);
         }
 
         void SetMultiSampling(object sender, PreparingDeviceSettingsEventArgs eventArgs)
@@ -45,8 +45,8 @@ namespace EngineTest
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            TheCamera = new Camera(this, new Vector3(-50, 50, 500), new Vector3(0, MathHelper.Pi, 0),
-                GraphicsDevice.Viewport.AspectRatio, 0.1f, 1000f);
+            TheCamera = new Camera(this, new Vector3(0, 0, 200), new Vector3(0, MathHelper.Pi, 0),
+                GraphicsDevice.Viewport.AspectRatio, 1, 300f);
 
             TheGame = new GameLogic(this, TheCamera);
 
@@ -85,8 +85,6 @@ namespace EngineTest
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -98,9 +96,14 @@ namespace EngineTest
         {
             GraphicsDevice.Clear(Color.DarkSlateBlue);
 
-            // TODO: Add your drawing code here
-
-            base.Draw(gameTime);
+            if (NotFirstFrame)
+            {
+                base.Draw(gameTime);
+            }
+            else
+            {
+                NotFirstFrame = true;
+            }
         }
     }
 }

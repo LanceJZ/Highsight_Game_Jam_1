@@ -14,7 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <AssemblyVersion>1.187.29.0</AssemblyVersion>
+    <AssemblyVersion>1.273.31.0</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -70,7 +70,9 @@
     <Compile Include="Engine\SmokeParticle.cs" />
     <Compile Include="Engine\Timer.cs" />
     <Compile Include="Engine\Words.cs" />
-    <Compile Include="Entities\Box.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\Shield.cs" />
+    <Compile Include="Entities\Shot.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameLogic.cs" />
     <Compile Include="Program.cs" />

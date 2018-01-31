@@ -73,6 +73,10 @@ namespace Highsight_Game_Jam_1
 
         public PositionedObject PO { get => ThePO; }
 
+        public Model ModelRef { get => TheModel; }
+
+        public Matrix WorldMatrixRef { get => BaseWorld; }
+
         public BoundingBox Bounds
         {
             get
@@ -89,6 +93,17 @@ namespace Highsight_Game_Jam_1
                 Vector3 boxMax = Vector3.Max(v1, v2);
 
                 return new BoundingBox(boxMin, boxMax);
+            }
+        }
+
+        public BoundingSphere Sphere
+        {
+            get
+            {
+                BoundingSphere sphere = TheModel.Meshes[0].BoundingSphere;
+                sphere.Radius *= 0.75f;
+                sphere = sphere.Transform(BaseWorld);
+                return sphere;
             }
         }
 
@@ -177,6 +192,7 @@ namespace Highsight_Game_Jam_1
         #region Initialize-Load-BeginRun
         public override void Initialize()
         {
+            Visible = false;
             base.Initialize();
             LoadContent();
             BeginRun();
@@ -242,6 +258,7 @@ namespace Highsight_Game_Jam_1
                     }
                 }
 
+                Game.SuppressDraw();
                 Enabled = true;
             }
             else
@@ -280,6 +297,7 @@ namespace Highsight_Game_Jam_1
                 }
 
                 TheModel.CopyAbsoluteBoneTransformsTo(BoneTransforms);
+                BaseWorld = TheModel.Root.Transform;
             }
         }
         #endregion
@@ -398,6 +416,25 @@ namespace Highsight_Game_Jam_1
         public Matrix RotateMatrix(Vector3 rotation)
         {
             return Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z);
+        }
+
+        public bool IsCollision(Model model1, Matrix world1, Model model2, Matrix world2)
+        {
+            for (int meshIndex1 = 0; meshIndex1 < model1.Meshes.Count; meshIndex1++)
+            {
+                BoundingSphere sphere1 = model1.Meshes[meshIndex1].BoundingSphere;
+                sphere1 = sphere1.Transform(world1);
+
+                for (int meshIndex2 = 0; meshIndex2 < model2.Meshes.Count; meshIndex2++)
+                {
+                    BoundingSphere sphere2 = model2.Meshes[meshIndex2].BoundingSphere;
+                    sphere2 = sphere2.Transform(world2);
+
+                    if (sphere1.Intersects(sphere2))
+                        return true;
+                }
+            }
+            return false;
         }
         #endregion
     }

@@ -567,20 +567,64 @@ namespace Highsight_Game_Jam_1
 
             return turnVelocity;
         }
-
-        public void CheckWindowBorders()
+        /// <summary>
+        /// Return true if PO goes beyond Borders + compSize
+        /// </summary>
+        /// <param name="Borders">X and Y of play area. Zero as center.</param>
+        /// <param name="compSize">Size of PO to compensate for when checking against borders.</param>
+        /// <returns></returns>
+        public bool CheckPlayBorders(Vector2 Borders, Vector2 compSize)
         {
-            if (Position.X > Helper.WindowWidth * 0.5f)
-                Position.X = Helper.WindowWidth * 0.5f;
+            if (Position.X + compSize.X > Borders.X)
+                return true;
 
-            if (Position.X < -Helper.WindowWidth * 0.5f)
-                Position.X = -Helper.WindowWidth * 0.5f;
+            if (Position.X - compSize.X < -Borders.X)
+                return true;
 
-            if (Position.Y > Helper.WindowHeight * 0.5f)
-                Position.Y = Helper.WindowHeight * 0.5f;
+            if (Position.Y + compSize.Y > Borders.Y)
+                return true;
 
-            if (Position.Y < -Helper.WindowHeight * 0.5f)
-                Position.Y = -Helper.WindowHeight * 0.5f;
+            if (Position.Y - compSize.Y < -Borders.Y)
+                return true;
+
+            return false;
+        }
+        /// <summary>
+        /// Wrap PO from top to bottom, bottom to top.
+        /// </summary>
+        /// <param name="height">Play area height.</param>
+        public void WrapTopBottom(float height)
+        {
+            if (Position.Y > height)
+                Position.Y = -height;
+            else if (Position.Y < -height)
+                Position.Y = height;
+        }
+        /// <summary>
+        /// Wrap PO from side to side.
+        /// </summary>
+        /// <param name="width">Play area width.</param>
+        public void WrapSideToSide(float width)
+        {
+            if (Position.X > width)
+                Position.X = -width;
+            else if (Position.X < -width)
+                Position.X = width;
+        }
+
+        public void CheckWindowBorders(float width, float height)
+        {
+            if (Position.X + width > Helper.WindowWidth * 0.5f)
+                Position.X = width + Helper.WindowWidth * 0.5f;
+
+            if (Position.X + width < -Helper.WindowWidth * 0.5f)
+                Position.X = width + -Helper.WindowWidth * 0.5f;
+
+            if (Position.Y + height > Helper.WindowHeight * 0.5f)
+                Position.Y = width - Helper.WindowHeight * 0.5f;
+
+            if (Position.Y + height < -Helper.WindowHeight * 0.5f)
+                Position.Y = width - -Helper.WindowHeight * 0.5f;
         }
 
         public void CheckWindowSideBorders(float width)

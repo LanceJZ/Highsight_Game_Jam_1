@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Highsight_Game_Jam_1")]
-[assembly: AssemblyProduct("Highsight_Game_Jam_1")]
+[assembly: AssemblyTitle("Satan's Crusade")]
+[assembly: AssemblyProduct("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyDescription("Highsight Game Jam 1 Entry")]
+[assembly: AssemblyCompany("Panther Games")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.187.29.0")]
-[assembly: AssemblyFileVersion("0129.29.1.2330")]
+[assembly: AssemblyVersion("1.273.31.0")]
+[assembly: AssemblyFileVersion("0131.31.1.0436")]
