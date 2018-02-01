@@ -14,17 +14,20 @@ namespace Highsight_Game_Jam_1
         #region Fields
         GameLogic LogicRef;
         Shot TheShot;
+        Missile TheMissile;
         KeyboardState OldKeyState;
         int PlayAreaHeight = 83;
         float MovementSpeed = 20;
         #endregion
         #region Properties
         public Shot ShotRef { get => TheShot; }
+        public Missile MissileRef { get => TheMissile; }
         #endregion
         #region Constructor
         public Player(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
             TheShot = new Shot(game, camera, gameLogic);
+            TheMissile = new Missile(game, camera, gameLogic);
             LogicRef = gameLogic;
         }
         #endregion
@@ -53,10 +56,40 @@ namespace Highsight_Game_Jam_1
         {
             PO.WrapTopBottom(PlayAreaHeight);
             Input();
+            BlockCollusion();
+
+            if (Sphere.Intersects(LogicRef.EnemyRef.Sphere))
+            {
+                SpawnMissile();
+            }
 
             base.Update(gameTime);
         }
         #endregion
+        public bool MissileCollusion()
+        {
+            if (Sphere.Intersects(TheMissile.Sphere))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        void BlockCollusion()
+        {
+            if (LogicRef.ShieldRef.CheckEating())
+            {
+                SpawnMissile();
+            }
+        }
+
+        void SpawnMissile()
+        {
+            if (!TheMissile.Enabled)
+                TheMissile.Spawn(new Vector3(-100, PO.Position.Y, 0));
+        }
+
         void Input()
         {
             KeyboardState KBS = Keyboard.GetState();
@@ -69,6 +102,11 @@ namespace Highsight_Game_Jam_1
                     {
                         TheShot.Spawn(Position + PO.VelocityFromAngleZ(Rotation.Z, 7),
                             Rotation, PO.VelocityFromAngleZ(Rotation.Z, 100));
+                    }
+
+                    if (TheMissile.Enabled)
+                    {
+                        TheMissile.Fire();
                     }
                 }
             }

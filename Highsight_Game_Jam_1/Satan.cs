@@ -3,21 +3,22 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Highsight_Game_Jam_1;
 #endregion
-namespace EngineTest
+namespace Highsight_Game_Jam_1
 {
-    public class Game1 : Game
+    public class Satan : Game
     {
         GraphicsDeviceManager GDM;
         SpriteBatch SB;
         GameLogic TheGame;
         Camera TheCamera;
         Timer FPSTimer;
+        KeyboardState OldKeyState;
         float FPSFrames = 0;
+        bool PauseGame;
         bool NotFirstFrame;
 
-        public Game1()
+        public Satan()
         {
             GDM = new GraphicsDeviceManager(this);
             GDM.SynchronizeWithVerticalRetrace = false; //When true, 60FSP refresh rate locked.
@@ -55,7 +56,6 @@ namespace EngineTest
 
             base.Initialize();
         }
-
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
@@ -67,7 +67,6 @@ namespace EngineTest
 
             // TODO: use this.Content to load your game content here
         }
-
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
@@ -76,7 +75,6 @@ namespace EngineTest
         {
             // TODO: Unload any non ContentManager content here
         }
-
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -88,7 +86,18 @@ namespace EngineTest
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            base.Update(gameTime);
+            KeyboardState KBS = Keyboard.GetState();
+
+            if (TheGame.CurrentMode == GameState.InPlay)
+            {
+                if (!OldKeyState.IsKeyDown(Keys.P) && KBS.IsKeyDown(Keys.P))
+                    PauseGame = !PauseGame;
+            }
+
+            OldKeyState = Keyboard.GetState();
+
+            if (!PauseGame)
+                base.Update(gameTime);
 
             FPSFrames++;
 
@@ -99,7 +108,6 @@ namespace EngineTest
                 FPSFrames = 0;
             }
         }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>

@@ -9,81 +9,55 @@ using System;
 #endregion
 namespace Highsight_Game_Jam_1
 {
-    class Enemy : ModelEntity
+    class Destroyer : ModelEntity
     {
         #region Fields
         GameLogic LogicRef;
-        Swirl TheSwirl;
-        Timer ArmTimer;
+        float Speed;
         #endregion
         #region Properties
 
         #endregion
         #region Constructor
-        public Enemy(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
+        public Destroyer(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
             LogicRef = gameLogic;
-            TheSwirl = new Swirl(game, camera, gameLogic);
-            ArmTimer = new Timer(game, Helper.RandomMinMax(4, 20));
+
         }
         #endregion
         #region Initialize-Load-BeginRun
         public override void Initialize()
         {
-            PO.Position.X = 100;
-            PO.Velocity.Y = 5;
+            Speed = 5;
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            LoadModel("Enemy");
+            LoadModel("Destroyer");
+
             base.LoadContent();
         }
 
         public override void BeginRun()
         {
-
             base.BeginRun();
+
+            Spawn(LogicRef.EnemyRef.Position);
         }
         #endregion
         #region Update
         public override void Update(GameTime gameTime)
         {
-            Animate();
-
-            if (ArmTimer.Elapsed)
-            {
-                ArmSwirl();
-            }
+            FollowPlayer();
 
             base.Update(gameTime);
         }
         #endregion
-        public void ResetSwirlTimer()
+        void FollowPlayer()
         {
-            ArmTimer.Reset(Helper.RandomMinMax(4, 20));
+            Velocity = PO.VelocityFromVectorsZ(LogicRef.PlayerRef.Position, Speed);
         }
-
-        void ArmSwirl()
-        {
-            if (!TheSwirl.Enabled)
-            {
-                TheSwirl.Spawn(new Vector3(Position.X, Position.Y, 4));
-            }
-        }
-
-        void Animate()
-        {
-            float amount = 15;
-
-            if (Position.Y > amount)
-                PO.Velocity.Y = -5;
-
-            if (Position.Y < -amount)
-                PO.Velocity.Y = 5;
-        }
-
     }
 }

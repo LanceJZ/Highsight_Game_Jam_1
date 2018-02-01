@@ -6,22 +6,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-public enum GameState
-{
-    Over,
-    InPlay,
-    HighScore,
-    MainMenu
-};
-
 namespace Highsight_Game_Jam_1
 {
+    enum State
+    {
+        Launched,
+        Standby
+    };
+
+    enum GameState
+    {
+        Over,
+        InPlay,
+        HighScore,
+        MainMenu
+    };
+
     class GameLogic : GameComponent
     {
         Camera TheCamera;
         Player ThePlayer;
         Shield TheShield;
         Enemy TheEnemy;
+        Destroyer TheDestroyer;
+        NZone TheNZone;
+        Stars TheStars;
 
         GameState GameMode = GameState.MainMenu;
         KeyboardState OldKeyState;
@@ -30,14 +39,17 @@ namespace Highsight_Game_Jam_1
         public Player PlayerRef { get => ThePlayer; }
         public Shield ShieldRef { get => TheShield; }
         public Enemy EnemyRef { get => TheEnemy; }
+        public Destroyer DestroyerRef { get => TheDestroyer; }
 
         public GameLogic(Game game, Camera camera) : base(game)
         {
             TheCamera = camera;
             TheEnemy = new Enemy(game, camera, this);
+            TheDestroyer = new Destroyer(game, camera, this);
             TheShield = new Shield(game, camera, this);
+            TheNZone = new NZone(game, camera, this);
             ThePlayer = new Player(game, camera, this);
-
+            TheStars = new Stars(game, camera, this);
             // Screen resolution is 1200 X 900.
             // Y positive is Up.
             // X positive is right of window when camera is at rotation zero.
@@ -48,6 +60,7 @@ namespace Highsight_Game_Jam_1
 
         public override void Initialize()
         {
+            GameMode = GameState.InPlay;
 
             base.Initialize();
             LoadContent();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EngineTest
+namespace Highsight_Game_Jam_1
 {
     /// <summary>
     /// The main class.
@@ -13,7 +13,7 @@ namespace EngineTest
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new Satan())
                 game.Run();
         }
     }

@@ -48,20 +48,48 @@ namespace Highsight_Game_Jam_1
 
         public bool CheckColusion(ModelEntity otherEntity)
         {
-            foreach(ModelEntity block in TheBlocks)
+            if (DidEntityCollide(otherEntity) == null)
+                return false;
+
+            DidEntityCollide(otherEntity).Enabled = false;
+            otherEntity.Enabled = false;
+            return true;
+        }
+
+        public bool CheckEating()
+        {
+            if (DidEntityCollide(LogicRef.PlayerRef) == null)
+                return false;
+
+            ModelEntity block = DidEntityCollide(LogicRef.PlayerRef);
+
+            if (Helper.RandomMinMax(0, 10) == 10)
+            {
+                block.Enabled = false;
+                return true;
+            }
+
+            LogicRef.PlayerRef.Velocity =
+                VelocityFromVectorsZ(LogicRef.PlayerRef.Position,
+                block.Position, 100);
+
+            return false;
+        }
+
+        ModelEntity DidEntityCollide(ModelEntity otherEntity)
+        {
+            foreach (ModelEntity block in TheBlocks)
             {
                 if (block.Enabled)
                 {
                     if (block.Sphere.Intersects(otherEntity.Sphere))
                     {
-                        block.Enabled = false;
-                        otherEntity.Enabled = false;
-                        return true;
+                        return block;
                     }
                 }
             }
 
-            return false;
+            return null;
         }
 
         void SetupShield()

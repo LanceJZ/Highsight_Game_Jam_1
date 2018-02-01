@@ -9,81 +9,88 @@ using System;
 #endregion
 namespace Highsight_Game_Jam_1
 {
-    class Enemy : ModelEntity
+    class Missile : ModelEntity
     {
         #region Fields
         GameLogic LogicRef;
-        Swirl TheSwirl;
-        Timer ArmTimer;
+        State TheState;
         #endregion
         #region Properties
 
         #endregion
         #region Constructor
-        public Enemy(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
+        public Missile(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
             LogicRef = gameLogic;
-            TheSwirl = new Swirl(game, camera, gameLogic);
-            ArmTimer = new Timer(game, Helper.RandomMinMax(4, 20));
+
         }
         #endregion
         #region Initialize-Load-BeginRun
         public override void Initialize()
         {
-            PO.Position.X = 100;
-            PO.Velocity.Y = 5;
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            LoadModel("Enemy");
+            LoadModel("Missile");
+
             base.LoadContent();
         }
 
         public override void BeginRun()
         {
-
             base.BeginRun();
+
+            Enabled = false;
         }
         #endregion
         #region Update
         public override void Update(GameTime gameTime)
         {
-            Animate();
-
-            if (ArmTimer.Elapsed)
+            switch (TheState)
             {
-                ArmSwirl();
+                case State.Standby:
+                    Aiming();
+                    break;
+                case State.Launched:
+                    CheckCollusion();
+                    break;
             }
 
             base.Update(gameTime);
         }
         #endregion
-        public void ResetSwirlTimer()
+        public override void Spawn(Vector3 position)
         {
-            ArmTimer.Reset(Helper.RandomMinMax(4, 20));
+            base.Spawn(position);
+            TheState = State.Standby;
+            Velocity = Vector3.Zero;
         }
 
-        void ArmSwirl()
+        public void Fire()
         {
-            if (!TheSwirl.Enabled)
+            if (TheState == State.Standby)
             {
-                TheSwirl.Spawn(new Vector3(Position.X, Position.Y, 4));
+                TheState = State.Launched;
+                PO.Velocity.X = 150;
             }
         }
 
-        void Animate()
+        void Aiming()
         {
-            float amount = 15;
-
-            if (Position.Y > amount)
-                PO.Velocity.Y = -5;
-
-            if (Position.Y < -amount)
-                PO.Velocity.Y = 5;
+            PO.Position.Y = LogicRef.PlayerRef.Position.Y;
         }
 
+        void CheckCollusion()
+        {
+            LogicRef.ShieldRef.CheckColusion(this);
+
+            if (LogicRef.PlayerRef.MissileCollusion())
+            {
+                Enabled = false;
+            }
+        }
     }
 }
