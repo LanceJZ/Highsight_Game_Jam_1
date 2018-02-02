@@ -13,6 +13,8 @@ namespace Highsight_Game_Jam_1
         List<Cube> TheBlocks = new List<Cube>();
         Camera CameraRef;
         GameLogic LogicRef;
+        SoundEffect BlockHitSound;
+        SoundEffect BlockEatSound;
 
         public Shield(Game game, Camera camera, GameLogic gameLogic) : base(game)
         {
@@ -29,7 +31,8 @@ namespace Highsight_Game_Jam_1
 
         public void LoadContent()
         {
-
+            BlockHitSound = Helper.LoadSoundEffect("BlockExplode");
+            BlockEatSound = Helper.LoadSoundEffect("BlockEat");
         }
 
         public override void BeginRun()
@@ -38,6 +41,7 @@ namespace Highsight_Game_Jam_1
 
             AddAsChildOf(LogicRef.EnemyRef.PO);
             SetupShield();
+            Reset();
         }
 
         public override void Update(GameTime gameTime)
@@ -46,11 +50,23 @@ namespace Highsight_Game_Jam_1
             base.Update(gameTime);
         }
 
+        public void Reset()
+        {
+            foreach(ModelEntity block in TheBlocks)
+            {
+                block.Enabled = true;
+                block.EmissiveColor = new Vector3(0.2f, 0, 0);
+                block.DefuseColor = new Vector3(0.6f, 0, 0.1f);
+            }
+        }
+
         public bool CheckColusion(ModelEntity otherEntity)
         {
             if (DidEntityCollide(otherEntity) == null)
                 return false;
 
+            BlockHitSound.Play();
+            LogicRef.AddPoints(69);
             DidEntityCollide(otherEntity).Enabled = false;
             otherEntity.Enabled = false;
             return true;
@@ -65,13 +81,15 @@ namespace Highsight_Game_Jam_1
 
             if (Helper.RandomMinMax(0, 10) == 10)
             {
+                BlockEatSound.Play();
                 block.Enabled = false;
+                LogicRef.AddPoints(160);
                 return true;
             }
 
             LogicRef.PlayerRef.Velocity =
                 VelocityFromVectorsZ(LogicRef.PlayerRef.Position,
-                block.Position, 100);
+                block.Position, 120);
 
             return false;
         }

@@ -13,6 +13,7 @@ namespace Highsight_Game_Jam_1
     {
         #region Fields
         GameLogic LogicRef;
+        SoundEffect ReadySound;
         State TheState;
         #endregion
         #region Properties
@@ -35,7 +36,7 @@ namespace Highsight_Game_Jam_1
         protected override void LoadContent()
         {
             LoadModel("Missile");
-
+            ReadySound = Helper.LoadSoundEffect("MissileReady");
             base.LoadContent();
         }
 
@@ -64,6 +65,7 @@ namespace Highsight_Game_Jam_1
         #endregion
         public override void Spawn(Vector3 position)
         {
+            ReadySound.Play();
             base.Spawn(position);
             TheState = State.Standby;
             Velocity = Vector3.Zero;
@@ -87,9 +89,22 @@ namespace Highsight_Game_Jam_1
         {
             LogicRef.ShieldRef.CheckColusion(this);
 
-            if (LogicRef.PlayerRef.MissileCollusion())
+            if (LogicRef.PlayerRef.Enabled)
             {
-                Enabled = false;
+                if (LogicRef.PlayerRef.MissileCollusion())
+                {
+                    Enabled = false;
+                    LogicRef.LoseLife();
+                }
+            }
+
+            if (LogicRef.EnemyRef.Enabled)
+            {
+                if (Sphere.Intersects(LogicRef.EnemyRef.Sphere))
+                {
+                    Enabled = false;
+                    LogicRef.EnemyRef.Explode();
+                }
             }
         }
     }

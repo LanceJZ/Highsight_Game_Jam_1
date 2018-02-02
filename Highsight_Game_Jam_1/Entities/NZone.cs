@@ -14,10 +14,9 @@ namespace Highsight_Game_Jam_1
         GameLogic LogicRef;
         Camera CameraRef;
         List<Cube> Lines = new List<Cube>();
-
         #endregion
         #region Properties
-
+        public List<Cube> LinesRef { get => Lines; }
         #endregion
         #region Constructor
         public NZone(Game game, Camera camera, GameLogic gameLogic) : base(game)
@@ -36,13 +35,11 @@ namespace Highsight_Game_Jam_1
 
         public void LoadContent()
         {
-
         }
 
         public override void BeginRun()
         {
             MakeZone();
-
             base.BeginRun();
         }
         #endregion
@@ -53,6 +50,19 @@ namespace Highsight_Game_Jam_1
             base.Update(gameTime);
         }
         #endregion
+        public bool CheckCollide(BoundingSphere sphere)
+        {
+            foreach (Cube line in Lines)
+            {
+                if (line.Sphere.Intersects(sphere))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         void MakeZone()
         {
             for (int i = 0; i < 40; i++)

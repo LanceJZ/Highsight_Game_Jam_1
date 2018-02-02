@@ -15,6 +15,9 @@ namespace Highsight_Game_Jam_1
         GameLogic LogicRef;
         Swirl TheSwirl;
         Timer ArmTimer;
+        SoundEffect ExplodeSound;
+        SoundEffect AlertSound;
+        bool AlertSounded;
         #endregion
         #region Properties
 
@@ -30,8 +33,6 @@ namespace Highsight_Game_Jam_1
         #region Initialize-Load-BeginRun
         public override void Initialize()
         {
-            PO.Position.X = 100;
-            PO.Velocity.Y = 5;
 
             base.Initialize();
         }
@@ -39,6 +40,9 @@ namespace Highsight_Game_Jam_1
         protected override void LoadContent()
         {
             LoadModel("Enemy");
+            ExplodeSound = Helper.LoadSoundEffect("EnemyExplode");
+            AlertSound = Helper.LoadSoundEffect("SwirlAlert");
+
             base.LoadContent();
         }
 
@@ -46,6 +50,7 @@ namespace Highsight_Game_Jam_1
         {
 
             base.BeginRun();
+            Reset();
         }
         #endregion
         #region Update
@@ -53,24 +58,54 @@ namespace Highsight_Game_Jam_1
         {
             Animate();
 
-            if (ArmTimer.Elapsed)
+            if (LogicRef.CurrentMode == GameState.InPlay)
             {
-                ArmSwirl();
+                if (ArmTimer.Amount - ArmTimer.Seconds < 2f && !AlertSounded)
+                {
+                    AlertSounded = true;
+                    AlertSound.Play();
+                }
+
+                if (ArmTimer.Elapsed)
+                {
+                    ArmSwirl();
+                }
             }
 
             base.Update(gameTime);
         }
         #endregion
+        public void Reset()
+        {
+            PO.Position.X = 100;
+            PO.Velocity.Y = 5;
+            DefuseColor = new Vector3(0.5f, 0.1f, 0.8f);
+            TheSwirl.Enabled = false;
+            ResetSwirlTimer();
+        }
+
+        public void Explode()
+        {
+            ExplodeSound.Play();
+            Reset();
+        }
+
+        public void EndGame()
+        {
+            TheSwirl.Enabled = false;
+        }
+
         public void ResetSwirlTimer()
         {
             ArmTimer.Reset(Helper.RandomMinMax(4, 20));
+            AlertSounded = false;
         }
 
         void ArmSwirl()
         {
             if (!TheSwirl.Enabled)
             {
-                TheSwirl.Spawn(new Vector3(Position.X, Position.Y, 4));
+                TheSwirl.Spawn(new Vector3(Position.X, Position.Y, 4), DefuseColor);
             }
         }
 

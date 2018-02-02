@@ -15,9 +15,19 @@ namespace Highsight_Game_Jam_1
         GameLogic LogicRef;
         Shot TheShot;
         Missile TheMissile;
+        SoundEffect ExplodeSound;
+        SoundEffect FlapSound;
+        SoundEffect IdleSound;
+        SoundEffect FireSound;
+        SoundEffect FireMissileSound;
+        Timer InZoneTimer;
+        SoundEffect InZoneSound;
+        Timer FlapSoundTimer;
+        Timer IdleSoundTimer;
         KeyboardState OldKeyState;
+        float MovementSpeed = 50;
         int PlayAreaHeight = 83;
-        float MovementSpeed = 20;
+        bool InZone;
         #endregion
         #region Properties
         public Shot ShotRef { get => TheShot; }
@@ -26,9 +36,12 @@ namespace Highsight_Game_Jam_1
         #region Constructor
         public Player(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
+            LogicRef = gameLogic;
             TheShot = new Shot(game, camera, gameLogic);
             TheMissile = new Missile(game, camera, gameLogic);
-            LogicRef = gameLogic;
+            FlapSoundTimer = new Timer(game);
+            IdleSoundTimer = new Timer(game);
+            InZoneTimer = new Timer(game);
         }
         #endregion
         #region Initialize-Load-BeginRun
@@ -40,15 +53,25 @@ namespace Highsight_Game_Jam_1
 
         protected override void LoadContent()
         {
+            ExplodeSound = Helper.LoadSoundEffect("PlayerExplode");
+            FlapSound = Helper.LoadSoundEffect("PlayerFlap");
+            IdleSound = Helper.LoadSoundEffect("PlayerIdle");
+            FireSound = Helper.LoadSoundEffect("PlayerFire");
+            FireMissileSound = Helper.LoadSoundEffect("PlayerFireMissile");
+            InZoneSound = Helper.LoadSoundEffect("NZone");
+
             LoadModel("Player");
             base.LoadContent();
         }
 
         public override void BeginRun()
         {
-            base.BeginRun();
+            IdleSoundTimer.Amount = (float)IdleSound.Duration.TotalSeconds;
+            FlapSoundTimer.Amount = (float)FlapSound.Duration.TotalSeconds;
+            InZoneTimer.Amount = (float)InZoneSound.Duration.TotalSeconds;
 
-            Spawn(new Vector3(-100, 0, 0));
+            base.BeginRun();
+            Reset();
         }
         #endregion
         #region Update
@@ -57,6 +80,7 @@ namespace Highsight_Game_Jam_1
             PO.WrapTopBottom(PlayAreaHeight);
             Input();
             BlockCollusion();
+            ZoneCollusion();
 
             if (Sphere.Intersects(LogicRef.EnemyRef.Sphere))
             {
@@ -74,6 +98,44 @@ namespace Highsight_Game_Jam_1
             }
 
             return false;
+        }
+
+        public void Reset()
+        {
+            TheMissile.Enabled = false;
+            Spawn(new Vector3(-100, 0, 0));
+        }
+
+        public void Explode()
+        {
+            ExplodeSound.Play();
+            Reset();
+        }
+
+        public void EndGame()
+        {
+            Enabled = false;
+            TheMissile.Enabled = false;
+        }
+
+        void ZoneCollusion()
+        {
+            if (LogicRef.NzoneRef.CheckCollide(Sphere))
+            {
+                InZone = true;
+
+                if (InZoneTimer.Elapsed)
+                {
+                    InZoneTimer.Reset();
+                    InZoneSound.Play();
+                }
+
+                return;
+            }
+            else
+            {
+                InZone = false;
+            }
         }
 
         void BlockCollusion()
@@ -98,15 +160,20 @@ namespace Highsight_Game_Jam_1
             {
                 if (KBS.IsKeyDown(Keys.LeftControl))
                 {
-                    if (!TheShot.Enabled)
+                    if (!InZone)
                     {
-                        TheShot.Spawn(Position + PO.VelocityFromAngleZ(Rotation.Z, 7),
-                            Rotation, PO.VelocityFromAngleZ(Rotation.Z, 100));
-                    }
+                        if (!TheShot.Enabled)
+                        {
+                            FireSound.Play();
+                            TheShot.Spawn(Position + PO.VelocityFromAngleZ(Rotation.Z, 7),
+                                Rotation, PO.VelocityFromAngleZ(Rotation.Z, 100));
+                        }
 
-                    if (TheMissile.Enabled)
-                    {
-                        TheMissile.Fire();
+                        if (TheMissile.Enabled)
+                        {
+                            FireMissileSound.Play();
+                            TheMissile.Fire();
+                        }
                     }
                 }
             }
@@ -138,6 +205,23 @@ namespace Highsight_Game_Jam_1
 
                 Rotation = Vector3.UnitZ * MathHelper.Pi;
                 Velocity = Vector3.UnitX * -MovementSpeed;
+            }
+
+            if (Velocity.X != 0 || Velocity.Y != 0)
+            {
+                if (FlapSoundTimer.Elapsed)
+                {
+                    FlapSoundTimer.Reset();
+                    FlapSound.Play();
+                }
+            }
+            else
+            {
+                if (IdleSoundTimer.Elapsed)
+                {
+                    IdleSoundTimer.Reset();
+                    IdleSound.Play();
+                }
             }
 
             OldKeyState = Keyboard.GetState();

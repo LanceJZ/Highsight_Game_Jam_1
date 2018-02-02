@@ -50,8 +50,8 @@ namespace Highsight_Game_Jam_1
                 TheStars.Last().ModelScale = new Vector3(Helper.RandomMinMax(0.15f, 0.5f));
                 TheStars.Last().DefuseColor = new Vector3(Helper.RandomMinMax(0.1f, 1),
                     Helper.RandomMinMax(0.05f, 0.1f), Helper.RandomMinMax(0.1f, 1));
-                TheStars.Last().EmissiveColor = new Vector3(Helper.RandomMinMax(0.5f, 1),
-                    Helper.RandomMinMax(0.05f, 0.1f), Helper.RandomMinMax(0.5f, 1));
+                TheStars.Last().EmissiveColor = new Vector3(Helper.RandomMinMax(0.1f, 0.5f),
+                    Helper.RandomMinMax(0.05f, 0.1f), Helper.RandomMinMax(0.1f, 0.5f));
             }
 
             base.BeginRun();

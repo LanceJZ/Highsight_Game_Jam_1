@@ -65,7 +65,7 @@ namespace Highsight_Game_Jam_1
             // Create a new SpriteBatch, which can be used to draw textures.
             SB = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            TheGame.LoadContent();
         }
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -74,6 +74,12 @@ namespace Highsight_Game_Jam_1
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+        }
+
+        protected override void BeginRun()
+        {
+            base.BeginRun();
+            TheGame.BeginRun();
         }
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -114,7 +120,7 @@ namespace Highsight_Game_Jam_1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkSlateBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             if (NotFirstFrame)
             {

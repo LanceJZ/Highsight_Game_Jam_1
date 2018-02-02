@@ -906,3 +906,87 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Destroyer.obj
 
+#begin Sounds/BlockExplode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/BlockExplode.wav
+
+#begin Sounds/EnemyExplode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/EnemyExplode.wav
+
+#begin Sounds/NZone.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/NZone.wav
+
+#begin Sounds/PlayerExplode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerExplode.wav
+
+#begin Sounds/PlayerFlap.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerFlap.wav
+
+#begin Sounds/PlayerIdle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerIdle.wav
+
+#begin Sounds/SwirlAlert.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SwirlAlert.wav
+
+#begin Sounds/SwirlLaunch.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SwirlLaunch.wav
+
+#begin Sounds/SwirlSpinup.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SwirlSpinup.wav
+
+#begin Sounds/PlayerFire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerFire.wav
+
+#begin Sounds/PlayerFireMissile.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerFireMissile.wav
+
+#begin Sounds/BlockEat.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/BlockEat.wav
+
+#begin Sounds/MissileReady.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/MissileReady.wav
+
+#begin Sounds/SwirlExplode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/SwirlExplode.wav
+

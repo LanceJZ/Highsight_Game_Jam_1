@@ -14,6 +14,9 @@ namespace Highsight_Game_Jam_1
         #region Fields
         GameLogic LogicRef;
         Timer FireTimer;
+        SoundEffect SpinupSound;
+        SoundEffect LaunchSound;
+        SoundEffect ExplodeSound;
         State TheState;
         #endregion
         #region Properties
@@ -29,13 +32,16 @@ namespace Highsight_Game_Jam_1
         #region Initialize-Load-BeginRun
         public override void Initialize()
         {
-
+            EmissiveColor = new Vector3(0.1f, 0.1f, 0.1f);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             LoadModel("Swirl");
+            SpinupSound = Helper.LoadSoundEffect("SwirlSpinup");
+            LaunchSound = Helper.LoadSoundEffect("SwirlLaunch");
+            ExplodeSound = Helper.LoadSoundEffect("SwirlExplode");
 
             base.LoadContent();
         }
@@ -63,10 +69,12 @@ namespace Highsight_Game_Jam_1
             base.Update(gameTime);
         }
         #endregion
-        public override void Spawn(Vector3 position)
+        public override void Spawn(Vector3 position, Vector3 color)
         {
             base.Spawn(position);
 
+            SpinupSound.Play();
+            DefuseColor = color;
             FireTimer.Reset(Helper.RandomMinMax(2, 10));
             TheState = State.Standby;
             Velocity = Vector3.Zero;
@@ -77,6 +85,7 @@ namespace Highsight_Game_Jam_1
 
         void Fire()
         {
+            LaunchSound.Play();
             TheState = State.Launched;
             Velocity = PO.VelocityFromVectorsZ(LogicRef.PlayerRef.Position, 100);
         }
@@ -94,14 +103,29 @@ namespace Highsight_Game_Jam_1
             if (PO.CheckPlayBorders(new Vector2(110, 83), Vector2.One))
             {
                 Reset();
+                return;
             }
 
             if (LogicRef.PlayerRef.MissileRef.Enabled)
             {
                 if (Sphere.Intersects(LogicRef.PlayerRef.MissileRef.Sphere))
                 {
+                    ExplodeSound.Play();
                     Reset();
                     LogicRef.PlayerRef.MissileRef.Enabled = false;
+
+                    switch (TheState)
+                    {
+                        case State.Standby:
+                            LogicRef.AddPoints(2000);
+                            break;
+                        case State.Launched:
+                            LogicRef.AddPoints(6000);
+                            LogicRef.AddLife();
+                            break;
+                    }
+
+                    return;
                 }
             }
 
@@ -110,6 +134,7 @@ namespace Highsight_Game_Jam_1
                 if (Sphere.Intersects(LogicRef.PlayerRef.Sphere))
                 {
                     Reset();
+                    LogicRef.LoseLife();
                 }
             }
         }
