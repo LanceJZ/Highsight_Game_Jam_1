@@ -11,6 +11,7 @@ namespace Highsight_Game_Jam_1
     class Shield : PositionedObject
     {
         List<Cube> TheBlocks = new List<Cube>();
+        List<Explode> TheExplosions = new List<Explode>();
         Camera CameraRef;
         GameLogic LogicRef;
         SoundEffect BlockHitSound;
@@ -62,22 +63,29 @@ namespace Highsight_Game_Jam_1
 
         public bool CheckColusion(ModelEntity otherEntity)
         {
-            if (DidEntityCollide(otherEntity) == null)
+            ModelEntity block = DidEntityCollide(otherEntity);
+
+            if (block == null)
                 return false;
 
+            MakeExplosion(block.PO.WorldPosition + block.Position);
             BlockHitSound.Play();
             LogicRef.AddPoints(69);
-            DidEntityCollide(otherEntity).Enabled = false;
+            block.Enabled = false;
             otherEntity.Enabled = false;
             return true;
         }
 
         public bool CheckEating()
         {
-            if (DidEntityCollide(LogicRef.PlayerRef) == null)
+            ModelEntity block = DidEntityCollide(LogicRef.PlayerRef);
+
+            if (block == null)
                 return false;
 
-            ModelEntity block = DidEntityCollide(LogicRef.PlayerRef);
+            LogicRef.PlayerRef.Velocity =
+                VelocityFromVectorsZ(LogicRef.PlayerRef.Position,
+                block.Position, 120);
 
             if (Helper.RandomMinMax(0, 10) == 10)
             {
@@ -87,11 +95,36 @@ namespace Highsight_Game_Jam_1
                 return true;
             }
 
-            LogicRef.PlayerRef.Velocity =
-                VelocityFromVectorsZ(LogicRef.PlayerRef.Position,
-                block.Position, 120);
-
             return false;
+        }
+
+        void MakeExplosion(Vector3 position)
+        {
+            foreach (Explode boom in TheExplosions)
+            {
+                if (!boom.Enabled)
+                {
+                    SetExplode(boom, position);
+                    return;
+                }
+            }
+
+            TheExplosions.Add(new Explode(Game, CameraRef));
+            SetExplode(TheExplosions.Last(), position);
+        }
+
+        void SetExplode(Explode boom, Vector3 position)
+        {
+            float rad = Helper.RandomMinMax(0.1f, 1);
+            int mc = Helper.RandomMinMax(6, 10);
+            float speed = Helper.RandomMinMax(10, 50);
+            Vector3 color = new Vector3(Helper.RandomMinMax(0.1f, 1),
+                Helper.RandomMinMax(0.1f, 1), Helper.RandomMinMax(0.1f, 1));
+            Vector3 lightcolor = new Vector3(Helper.RandomMinMax(0.01f, 0.2f),
+                Helper.RandomMinMax(0.01f, 0.1f), Helper.RandomMinMax(0.01f, 0.2f));
+
+            boom.Setup(color, lightcolor);
+            boom.Spawn(position, rad, mc, speed, 0.1f, 2);
         }
 
         ModelEntity DidEntityCollide(ModelEntity otherEntity)

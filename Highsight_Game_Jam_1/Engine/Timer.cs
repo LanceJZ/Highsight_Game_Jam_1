@@ -7,10 +7,9 @@ namespace Highsight_Game_Jam_1
         private float TheSeconds;
         private float TheAmount;
 
-        public float Seconds
-        {
-            get { return TheSeconds; }
-        }
+        public float Seconds { get => TheSeconds; }
+        public float TimeLeft { get => TheAmount - TheSeconds; }
+        public bool Elapsed { get => (TheSeconds > TheAmount); }
 
         public float Amount
         {
@@ -20,14 +19,6 @@ namespace Highsight_Game_Jam_1
             {
                 TheAmount = value;
                 Reset();
-            }
-        }
-
-        public bool Elapsed
-        {
-            get
-            {
-                return (TheSeconds > TheAmount);
             }
         }
 
@@ -52,8 +43,10 @@ namespace Highsight_Game_Jam_1
         {
             base.Update(gameTime);
 
-            if (!Elapsed)
-                TheSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            TheSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (Elapsed)
+                Enabled = false;
         }
 
         public void Reset()
@@ -64,8 +57,7 @@ namespace Highsight_Game_Jam_1
 
         public void Reset(float time)
         {
-            TheAmount = time;
-            Reset();
+            Amount = time;
         }
     }
 }

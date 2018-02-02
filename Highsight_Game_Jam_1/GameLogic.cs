@@ -126,14 +126,12 @@ namespace Highsight_Game_Jam_1
         {
             PlayerLifes--;
             TheDisplay.SetPlayerLifes(PlayerLifes);
+            ThePlayer.Explode();
 
             if (PlayerLifes <= 0)
             {
                 EndGame();
-                return;
             }
-
-            ThePlayer.Explode();
         }
 
         void Input()

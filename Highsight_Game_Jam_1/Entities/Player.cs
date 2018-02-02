@@ -15,15 +15,16 @@ namespace Highsight_Game_Jam_1
         GameLogic LogicRef;
         Shot TheShot;
         Missile TheMissile;
+        Explode TheExplosion;
+        Timer InZoneTimer;
+        Timer FlapSoundTimer;
+        Timer IdleSoundTimer;
         SoundEffect ExplodeSound;
         SoundEffect FlapSound;
         SoundEffect IdleSound;
         SoundEffect FireSound;
         SoundEffect FireMissileSound;
-        Timer InZoneTimer;
         SoundEffect InZoneSound;
-        Timer FlapSoundTimer;
-        Timer IdleSoundTimer;
         KeyboardState OldKeyState;
         float MovementSpeed = 50;
         int PlayAreaHeight = 83;
@@ -39,6 +40,7 @@ namespace Highsight_Game_Jam_1
             LogicRef = gameLogic;
             TheShot = new Shot(game, camera, gameLogic);
             TheMissile = new Missile(game, camera, gameLogic);
+            TheExplosion = new Explode(game, camera);
             FlapSoundTimer = new Timer(game);
             IdleSoundTimer = new Timer(game);
             InZoneTimer = new Timer(game);
@@ -103,11 +105,13 @@ namespace Highsight_Game_Jam_1
         public void Reset()
         {
             TheMissile.Enabled = false;
+            TheExplosion.Setup(new Vector3(0.6f, 0.1f, 0.8f), new Vector3(0f, 0, 0.3f));
             Spawn(new Vector3(-100, 0, 0));
         }
 
         public void Explode()
         {
+            TheExplosion.Spawn(Position, 2, 100, 20, 0.25f, 3);
             ExplodeSound.Play();
             Reset();
         }

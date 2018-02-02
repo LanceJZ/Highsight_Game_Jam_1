@@ -14,19 +14,21 @@ namespace Highsight_Game_Jam_1
         #region Fields
         GameLogic LogicRef;
         Swirl TheSwirl;
+        Explode TheExplosion;
         Timer ArmTimer;
         SoundEffect ExplodeSound;
         SoundEffect AlertSound;
         bool AlertSounded;
         #endregion
         #region Properties
-
+        public Swirl SwirlRef { get => TheSwirl; }
         #endregion
         #region Constructor
         public Enemy(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
             LogicRef = gameLogic;
             TheSwirl = new Swirl(game, camera, gameLogic);
+            TheExplosion = new Explode(game, camera);
             ArmTimer = new Timer(game, Helper.RandomMinMax(4, 20));
         }
         #endregion
@@ -48,7 +50,6 @@ namespace Highsight_Game_Jam_1
 
         public override void BeginRun()
         {
-
             base.BeginRun();
             Reset();
         }
@@ -60,7 +61,7 @@ namespace Highsight_Game_Jam_1
 
             if (LogicRef.CurrentMode == GameState.InPlay)
             {
-                if (ArmTimer.Amount - ArmTimer.Seconds < 2f && !AlertSounded)
+                if (ArmTimer.TimeLeft < 2f && !AlertSounded)
                 {
                     AlertSounded = true;
                     AlertSound.Play();
@@ -82,12 +83,18 @@ namespace Highsight_Game_Jam_1
             DefuseColor = new Vector3(0.5f, 0.1f, 0.8f);
             TheSwirl.Enabled = false;
             ResetSwirlTimer();
+            TheExplosion.Setup(new Vector3(0.8f, 0.1f, 0.4f), new Vector3(0.3f, 0, 0f));
         }
 
         public void Explode()
         {
+            TheExplosion.Spawn(Position, 2, 150, 25, 0.3f, 4);
             ExplodeSound.Play();
+            LogicRef.AddPoints(1000);
             Reset();
+            LogicRef.ShieldRef.Reset();
+            LogicRef.PlayerRef.Reset();
+            LogicRef.DestroyerRef.Reset();
         }
 
         public void EndGame()

@@ -98,14 +98,25 @@ namespace Highsight_Game_Jam_1
                 }
             }
 
-            if (LogicRef.EnemyRef.Enabled)
+            if (Sphere.Intersects(LogicRef.EnemyRef.SwirlRef.Sphere))
+            {
+                Enabled = false;
+                LogicRef.EnemyRef.SwirlRef.HitByMissile();
+                return;
+            }
+
+            if (LogicRef.EnemyRef.Enabled && !LogicRef.EnemyRef.SwirlRef.Enabled)
             {
                 if (Sphere.Intersects(LogicRef.EnemyRef.Sphere))
                 {
                     Enabled = false;
                     LogicRef.EnemyRef.Explode();
+                    return;
                 }
             }
+
+            if (Position.X > 120)
+                Enabled = false;
         }
     }
 }

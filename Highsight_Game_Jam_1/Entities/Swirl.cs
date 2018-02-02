@@ -13,6 +13,7 @@ namespace Highsight_Game_Jam_1
     {
         #region Fields
         GameLogic LogicRef;
+        Explode TheExplosion;
         Timer FireTimer;
         SoundEffect SpinupSound;
         SoundEffect LaunchSound;
@@ -26,6 +27,7 @@ namespace Highsight_Game_Jam_1
         public Swirl(Game game, Camera camera, GameLogic gameLogic) : base(game, camera)
         {
             LogicRef = gameLogic;
+            TheExplosion = new Explode(game, camera);
             FireTimer = new Timer(game, 10);
         }
         #endregion
@@ -75,12 +77,31 @@ namespace Highsight_Game_Jam_1
 
             SpinupSound.Play();
             DefuseColor = color;
+            TheExplosion.Setup(EmissiveColor, color);
             FireTimer.Reset(Helper.RandomMinMax(2, 10));
             TheState = State.Standby;
             Velocity = Vector3.Zero;
             RotationVelocity = Vector3.Zero;
             RotationAcceleration = Vector3.Zero;
             PO.RotationAcceleration.Z = -MathHelper.Pi;
+        }
+
+        public void HitByMissile()
+        {
+            TheExplosion.Spawn(Position, 1.5f, 50, 14, 0.2f, 1);
+            ExplodeSound.Play();
+            Reset();
+
+            switch (TheState)
+            {
+                case State.Standby:
+                    LogicRef.AddPoints(2000);
+                    break;
+                case State.Launched:
+                    LogicRef.AddPoints(6000);
+                    LogicRef.AddLife();
+                    break;
+            }
         }
 
         void Fire()
@@ -104,29 +125,6 @@ namespace Highsight_Game_Jam_1
             {
                 Reset();
                 return;
-            }
-
-            if (LogicRef.PlayerRef.MissileRef.Enabled)
-            {
-                if (Sphere.Intersects(LogicRef.PlayerRef.MissileRef.Sphere))
-                {
-                    ExplodeSound.Play();
-                    Reset();
-                    LogicRef.PlayerRef.MissileRef.Enabled = false;
-
-                    switch (TheState)
-                    {
-                        case State.Standby:
-                            LogicRef.AddPoints(2000);
-                            break;
-                        case State.Launched:
-                            LogicRef.AddPoints(6000);
-                            LogicRef.AddLife();
-                            break;
-                    }
-
-                    return;
-                }
             }
 
             if (LogicRef.PlayerRef.Enabled)

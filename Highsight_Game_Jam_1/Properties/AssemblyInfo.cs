@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Satan's Crusade")]
+[assembly: AssemblyTitle("Satan's Crusade Alpha")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyDescription("Highsight Game Jam 1 Entry")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.447.2.0")]
-[assembly: AssemblyFileVersion("0202.33.2.0646")]
+[assembly: AssemblyVersion("1.478.2.0")]
+[assembly: AssemblyFileVersion("0202.33.2.2136")]

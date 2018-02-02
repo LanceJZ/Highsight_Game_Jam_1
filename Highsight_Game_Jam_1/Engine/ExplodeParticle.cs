@@ -7,11 +7,11 @@ using System;
 
 namespace Highsight_Game_Jam_1
 {
-    class ExplodeParticle : ModelEntity
+    class ExplodeParticle : Cube
     {
         Timer LifeTimer;
 
-        public ExplodeParticle(Game game, Camera camera, Model model) : base(game, camera, model)
+        public ExplodeParticle(Game game, Camera camera) : base(game, camera)
         {
             LifeTimer = new Timer(game);
         }
@@ -34,7 +34,7 @@ namespace Highsight_Game_Jam_1
             base.Spawn(position);
 
             Velocity = ThePO.RandomVelocity(velocity);
-            Scale = Helper.RandomMinMax(0.5f + scaleRange, 1.5f + scaleRange);
+            Scale = Helper.RandomMinMax(scaleRange, 1.5f * scaleRange);
             LifeTimer.Reset(Helper.RandomMinMax(0.1f, maxLife));
         }
     }
