@@ -162,7 +162,7 @@ namespace Highsight_Game_Jam_1
 
             if (KBS != OldKeyState)
             {
-                if (KBS.IsKeyDown(Keys.LeftControl))
+                if (KBS.IsKeyDown(Keys.LeftControl) || KBS.IsKeyDown(Keys.Space))
                 {
                     if (!InZone)
                     {
